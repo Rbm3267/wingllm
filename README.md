@@ -67,17 +67,21 @@ Tested on an **Intel Core i5-8500T (6 cores, 32GB RAM)** paired with an **NVIDIA
 
 ## Quickstart
 
-### 1. One-Line Install (Windows)
-Open PowerShell and run:
+### 1. One-Line Install
+
+**macOS & Linux**:
+```bash
+curl -fsSL https://raw.githubusercontent.com/Rbm3267/wingllm/main/install.sh | bash
+```
+
+**Windows (PowerShell)**:
 ```powershell
 irm https://raw.githubusercontent.com/Rbm3267/wingllm/main/install.ps1 | iex
 ```
 
 *Or install from source with Go:*
 ```bash
-git clone https://github.com/Rbm3267/wingllm.git
-cd wingllm
-go build -o wingllm.exe ./cmd/wingllm
+go install github.com/Rbm3267/wingllm/cmd/wingllm@latest
 ```
 
 ### 2. Check Available Models & Pairings

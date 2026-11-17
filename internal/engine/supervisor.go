@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"time"
 
 	"github.com/Rbm3267/wingllm/internal/discovery"
@@ -37,19 +38,32 @@ func DefaultConfig() Config {
 	}
 }
 
-// FindLlamaServer checks standard Ollama paths and PATH for llama-server.exe.
+// FindLlamaServer checks standard Ollama paths, Homebrew paths, and PATH for llama-server.
 func FindLlamaServer() (string, error) {
-	userProfile := os.Getenv("USERPROFILE")
-	ollamaServer := filepath.Join(userProfile, "AppData", "Local", "Programs", "Ollama", "lib", "ollama", "llama-server.exe")
-	if _, err := os.Stat(ollamaServer); err == nil {
-		return ollamaServer, nil
-	}
-
 	if p, err := exec.LookPath("llama-server"); err == nil {
 		return p, nil
 	}
 
-	return "", fmt.Errorf("llama-server.exe not found in Ollama directory or system PATH")
+	if runtime.GOOS == "windows" {
+		userProfile := os.Getenv("USERPROFILE")
+		ollamaServer := filepath.Join(userProfile, "AppData", "Local", "Programs", "Ollama", "lib", "ollama", "llama-server.exe")
+		if _, err := os.Stat(ollamaServer); err == nil {
+			return ollamaServer, nil
+		}
+	} else if runtime.GOOS == "darwin" {
+		// Standard macOS Homebrew paths
+		candidates := []string{
+			"/opt/homebrew/bin/llama-server",
+			"/usr/local/bin/llama-server",
+		}
+		for _, c := range candidates {
+			if _, err := os.Stat(c); err == nil {
+				return c, nil
+			}
+		}
+	}
+
+	return "", fmt.Errorf("llama-server executable not found. Install via 'brew install llama.cpp' (macOS) or verify Ollama installation")
 }
 
 func NewSupervisor(pair *discovery.PairedModels, cfg Config) *Supervisor {

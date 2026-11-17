@@ -1,5 +1,6 @@
 # Binaries
 wingllm.exe
+wingllm-*
 *.exe
 *.exe~
 *.dll

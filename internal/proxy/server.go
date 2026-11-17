@@ -7,6 +7,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os/exec"
+	"runtime"
 	"time"
 
 	"github.com/Rbm3267/wingllm/internal/discovery"
@@ -91,11 +92,22 @@ func (s *Server) Start() error {
 	fmt.Printf(" WingLLM Web Dashboard:            http://localhost:%d/\n", s.Port)
 	fmt.Printf(" Opening web chat in your browser...\n\n")
 
-	// Automatically open browser on Windows
+	// Cross-platform auto-open browser
 	go func() {
 		time.Sleep(500 * time.Millisecond)
-		_ = exec.Command("rundll32", "url.dll,FileProtocolHandler", fmt.Sprintf("http://localhost:%d/", s.Port)).Start()
+		openBrowser(fmt.Sprintf("http://localhost:%d/", s.Port))
 	}()
 
 	return http.ListenAndServe(addr, mux)
+}
+
+func openBrowser(url string) {
+	switch runtime.GOOS {
+	case "windows":
+		_ = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		_ = exec.Command("open", url).Start()
+	case "linux":
+		_ = exec.Command("xdg-open", url).Start()
+	}
 }

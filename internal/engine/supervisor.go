@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Bennett/wingllm/internal/discovery"
+	"github.com/Rbm3267/wingllm/internal/discovery"
 )
 
 type Config struct {

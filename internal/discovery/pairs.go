@@ -48,7 +48,8 @@ func FindBestPair(targetName string, available []ModelInfo) (*PairedModels, erro
 	}
 
 	if bestDraft == nil {
-		return nil, fmt.Errorf("no compatible draft model found for %s. Suggest pulling 'ollama pull qwen2.5-coder:0.5b'", target.Name)
+		defaultDraft := GetDefaultDraftName(target.Family)
+		return nil, fmt.Errorf("no compatible draft model found for %s. Run 'ollama pull %s'", target.Name, defaultDraft)
 	}
 
 	return &PairedModels{
@@ -61,4 +62,16 @@ func FindBestPair(targetName string, available []ModelInfo) (*PairedModels, erro
 			target.Family,
 		),
 	}, nil
+}
+
+// GetDefaultDraftName returns the recommended draft model name for a given family.
+func GetDefaultDraftName(family string) string {
+	switch family {
+	case "qwen2.5":
+		return "qwen2.5-coder:0.5b"
+	case "llama3":
+		return "llama3.2:1b"
+	default:
+		return "qwen2.5-coder:0.5b"
+	}
 }

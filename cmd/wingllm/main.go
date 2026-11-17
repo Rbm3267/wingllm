@@ -4,13 +4,15 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"os/signal"
+	"strings"
 	"syscall"
 
-	"github.com/Bennett/wingllm/internal/discovery"
-	"github.com/Bennett/wingllm/internal/engine"
-	"github.com/Bennett/wingllm/internal/proxy"
-	"github.com/Bennett/wingllm/internal/vram"
+	"github.com/Rbm3267/wingllm/internal/discovery"
+	"github.com/Rbm3267/wingllm/internal/engine"
+	"github.com/Rbm3267/wingllm/internal/proxy"
+	"github.com/Rbm3267/wingllm/internal/vram"
 )
 
 var banner = `
@@ -139,8 +141,30 @@ func handleServe(args []string) {
 
 	pair, err := discovery.FindBestPair(targetModel, models)
 	if err != nil {
-		fmt.Printf("Pairing Error: %v\n", err)
-		return
+		// Check if target model exists but needs draft model
+		var target *discovery.ModelInfo
+		for i := range models {
+			if strings.EqualFold(models[i].Name, targetModel) || strings.Contains(strings.ToLower(models[i].Name), strings.ToLower(targetModel)) {
+				target = &models[i]
+				break
+			}
+		}
+		if target != nil {
+			draftName := discovery.GetDefaultDraftName(target.Family)
+			fmt.Printf("\nCompatible draft model not found locally.\nAuto-pulling recommended draft model '%s' via Ollama (~397 MB)...\n\n", draftName)
+			pullCmd := exec.Command("ollama", "pull", draftName)
+			pullCmd.Stdout = os.Stdout
+			pullCmd.Stderr = os.Stderr
+			if err := pullCmd.Run(); err == nil {
+				// Rescan models
+				models, _ = discovery.ScanOllamaModels()
+				pair, err = discovery.FindBestPair(targetModel, models)
+			}
+		}
+		if pair == nil {
+			fmt.Printf("Pairing Error: %v\n", err)
+			return
+		}
 	}
 
 	fmt.Println(banner)

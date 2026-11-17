@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/Bennett/wingllm/internal/discovery"
-	"github.com/Bennett/wingllm/internal/vram"
+	"github.com/Rbm3267/wingllm/internal/discovery"
+	"github.com/Rbm3267/wingllm/internal/vram"
 )
 
 type Server struct {

@@ -63,13 +63,16 @@ Tested on an **Intel Core i5-8500T (6 cores, 32GB RAM)** paired with an **NVIDIA
 
 ## Quickstart
 
-### 1. Installation
-```bash
-# Clone the repository
-git clone https://github.com/Bennett/wingllm.git
-cd wingllm
+### 1. One-Line Install (Windows)
+Open PowerShell and run:
+```powershell
+irm https://raw.githubusercontent.com/Rbm3267/wingllm/main/install.ps1 | iex
+```
 
-# Build the single standalone binary
+*Or install from source with Go:*
+```bash
+git clone https://github.com/Rbm3267/wingllm.git
+cd wingllm
 go build -o wingllm.exe ./cmd/wingllm
 ```
 
@@ -96,6 +99,7 @@ wingllm list
 ```bash
 wingllm serve qwen2.5-coder:7b
 ```
+*(If you don't have the 0.5B draft model installed yet, WingLLM will automatically pull it for you via Ollama and immediately start serving!)*
 WingLLM will:
 1. Verify free VRAM headroom on your GPU.
 2. Initialize `qwen2.5-coder:7b` in system RAM.

@@ -91,21 +91,28 @@ func (s *Supervisor) Start() error {
 		"-md", s.Pair.Draft.BlobPath,
 		"--spec-draft-n-max", fmt.Sprintf("%d", s.Config.DraftNMax),
 		"--spec-draft-n-min", "1",
+		"-ctkd", "q8_0", // Quantized draft KV cache saves 50% draft memory
+		"-ctvd", "q8_0",
 	}
 
 	if s.Config.UseGPUForDraft {
-		args = append(args, "-ngld", "999") // Offload draft layers to GPU
+		args = append(args, "-ngld", "999") // Offload all draft layers to GPU VRAM
 	}
 
 	cmd := exec.Command(binPath, args...)
+	cmd.Dir = filepath.Dir(binPath) // Run in engine's own library directory for DLL resolution
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	// Ensure Ollama library paths are present in PATH for DLL loading
+	// Ensure all GPU backend library paths (CUDA v12/v13, Vulkan) are present in PATH for DLL loading
 	ollamaLib := filepath.Dir(binPath)
-	cudaLib := filepath.Join(ollamaLib, "cuda_v12")
+	cuda12 := filepath.Join(ollamaLib, "cuda_v12")
+	cuda13 := filepath.Join(ollamaLib, "cuda_v13")
+	vulkan := filepath.Join(ollamaLib, "vulkan")
+
 	cmd.Env = append(os.Environ(),
-		fmt.Sprintf("PATH=%s;%s;%s", cudaLib, ollamaLib, os.Getenv("PATH")),
+		fmt.Sprintf("PATH=%s;%s;%s;%s;%s", cuda12, cuda13, vulkan, ollamaLib, os.Getenv("PATH")),
+		fmt.Sprintf("GGML_BACKEND_SEARCH_PATH=%s;%s", cuda12, vulkan),
 	)
 
 	if err := cmd.Start(); err != nil {

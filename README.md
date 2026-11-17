@@ -116,9 +116,14 @@ WingLLM will:
 
 ---
 
-## Connecting to Your IDE
+## Connecting to Your IDE & AI Agents
 
-In **VS Code (Continue Extension)** (`~/.continue/config.json`):
+### VS Code (Continue Extension)
+Run the 1-click connector:
+```bash
+wingllm connect vscode
+```
+*Or add manually to `~/.continue/config.json`:*
 ```json
 {
   "models": [
@@ -131,6 +136,25 @@ In **VS Code (Continue Extension)** (`~/.continue/config.json`):
   ]
 }
 ```
+
+### Model Context Protocol (MCP) for Claude Code / Cursor / Agents
+WingLLM includes a built-in MCP server for AI coding assistants.
+
+Add to your MCP configuration (e.g. `claude_desktop_config.json` or `.cursor/mcp.json`):
+```json
+{
+  "mcpServers": {
+    "wingllm": {
+      "command": "wingllm",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+Available MCP Tools:
+- `wingllm_vram`: Check real-time GPU VRAM safety budget.
+- `wingllm_models`: List discovered models and auto-curated draft pairs.
+- `wingllm_status`: Inspect live engine throughput and health.
 
 ---
 

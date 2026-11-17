@@ -13,6 +13,7 @@ import (
 
 	"github.com/Rbm3267/wingllm/internal/discovery"
 	"github.com/Rbm3267/wingllm/internal/engine"
+	"github.com/Rbm3267/wingllm/internal/mcp"
 	"github.com/Rbm3267/wingllm/internal/plugin"
 	"github.com/Rbm3267/wingllm/internal/proxy"
 	"github.com/Rbm3267/wingllm/internal/ui"
@@ -32,6 +33,8 @@ func main() {
 		handleVRAM()
 	case "list":
 		handleList()
+	case "mcp":
+		handleMCP()
 	case "connect":
 		handleConnect(os.Args[2:])
 	case "serve", "run":
@@ -47,14 +50,23 @@ func printUsage() {
 	fmt.Println("Usage: wingllm <command> [options]")
 	fmt.Println("\nCommands:")
 	fmt.Println("  serve <model>     Start speculative inference server (auto-pairs with draft model)")
+	fmt.Println("  mcp               Start Model Context Protocol (MCP) server for AI agents")
 	fmt.Println("  connect [vscode]  Auto-configure WingLLM into VS Code (Continue/Cline) with 1 click")
 	fmt.Println("  list              Scan local Ollama models and show available target/draft pairs")
 	fmt.Println("  vram              Inspect GPU VRAM status and available budget")
 	fmt.Println("\nExamples:")
 	fmt.Println("  wingllm serve qwen2.5-coder:7b")
+	fmt.Println("  wingllm mcp")
 	fmt.Println("  wingllm connect vscode")
 	fmt.Println("  wingllm list")
 	fmt.Println("  wingllm vram")
+}
+
+func handleMCP() {
+	// Standard MCP stdio server on port 8081 (default internal engine port)
+	if err := mcp.RunMCPServer(8081); err != nil {
+		fmt.Fprintf(os.Stderr, "MCP Server error: %v\n", err)
+	}
 }
 
 func handleConnect(args []string) {

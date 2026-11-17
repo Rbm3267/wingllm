@@ -14,18 +14,9 @@ import (
 	"github.com/Rbm3267/wingllm/internal/discovery"
 	"github.com/Rbm3267/wingllm/internal/engine"
 	"github.com/Rbm3267/wingllm/internal/proxy"
+	"github.com/Rbm3267/wingllm/internal/ui"
 	"github.com/Rbm3267/wingllm/internal/vram"
 )
-
-var banner = `
- __      __.__             .____    .____       _____   
-/  \    /  \__| ____    ____|    |   |    |     /     \  
-\   \/\/   /  |/    \  / ___/    |   |    |    /  \ /  \ 
- \        /|  |   |  \/ /_/  >    |___|    |___/    Y    \
-  \__/\  / |__|___|  /\___  /|_______ \_______ \____|__  /
-       \/          \//_____/         \/       \/       \/ 
-   Heterogeneous Speculative Decoding for Local AI
-`
 
 func main() {
 	if len(os.Args) < 2 {
@@ -48,8 +39,21 @@ func main() {
 	}
 }
 
+func printUsage() {
+	ui.PlayPlaneBanner()
+	fmt.Println("Usage: wingllm <command> [options]")
+	fmt.Println("\nCommands:")
+	fmt.Println("  serve <model>   Start speculative inference server (auto-pairs with draft model)")
+	fmt.Println("  list            Scan local Ollama models and show available target/draft pairs")
+	fmt.Println("  vram            Inspect GPU VRAM status and available budget")
+	fmt.Println("\nExamples:")
+	fmt.Println("  wingllm serve qwen2.5-coder:7b")
+	fmt.Println("  wingllm list")
+	fmt.Println("  wingllm vram")
+}
+
 func handleInteractive() {
-	fmt.Println(banner)
+	ui.PlayPlaneBanner()
 	fmt.Println(" Scanning local models in Ollama...")
 
 	models, err := discovery.ScanOllamaModels()
@@ -107,19 +111,6 @@ func handleInteractive() {
 	selectedModel := viableTargets[choiceIndex]
 	fmt.Printf("\nLaunching WingLLM with '%s'...\n\n", selectedModel)
 	handleServe([]string{selectedModel})
-}
-
-func printUsage() {
-	fmt.Println(banner)
-	fmt.Println("Usage: wingllm <command> [options]")
-	fmt.Println("\nCommands:")
-	fmt.Println("  serve <model>   Start speculative inference server (auto-pairs with draft model)")
-	fmt.Println("  list            Scan local Ollama models and show available target/draft pairs")
-	fmt.Println("  vram            Inspect GPU VRAM status and available budget")
-	fmt.Println("\nExamples:")
-	fmt.Println("  wingllm serve qwen2.5-coder:7b")
-	fmt.Println("  wingllm list")
-	fmt.Println("  wingllm vram")
 }
 
 func handleVRAM() {
@@ -230,7 +221,7 @@ func handleServe(args []string) {
 		}
 	}
 
-	fmt.Println(banner)
+	ui.PlayPlaneBanner()
 	fmt.Printf("Target Model:  %s (Loaded into System RAM)\n", pair.Target.Name)
 	fmt.Printf("Wingman Draft: %s (Offloaded to 2GB GPU)\n", pair.Draft.Name)
 	fmt.Printf("Strategy:      %s\n", pair.Reason)

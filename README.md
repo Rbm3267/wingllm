@@ -1,8 +1,12 @@
-# WingLLM 🪽
-**Heterogeneous Speculative Decoding Co-Processor for Budget GPUs & Low-VRAM Hardware**
-
-[![Go Version](https://img.shields.io/badge/go-1.22+-blue.svg)](https://golang.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+<div align="center">
+  <img src="assets/icon.svg" width="96" height="96" alt="WingLLM Logo" />
+  <h1>WingLLM</h1>
+  <p><strong>Heterogeneous Speculative Decoding Co-Processor for Budget GPUs & Low-VRAM Hardware</strong></p>
+  <p>
+    <a href="https://golang.org"><img src="https://img.shields.io/badge/go-1.22+-blue.svg" alt="Go Version" /></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" /></a>
+  </p>
+</div>
 
 > **Turn your 2 GB GPU into a high-speed speculative drafting engine. Double your local AI inference speeds without buying expensive hardware.**
 

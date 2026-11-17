@@ -1,5 +1,5 @@
 # WingLLM One-Line Windows Installer
-# Usage: irm https://raw.githubusercontent.com/Rbm3267/wingllm/main/install.ps1 | iex
+# Usage: irm https://huggingface.co/bennett-xdlabs/wingllm/raw/main/install.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 
@@ -13,17 +13,15 @@ if (!(Test-Path $InstallDir)) {
 }
 
 $ExePath = "$InstallDir\wingllm.exe"
-$ReleaseUrl = "https://github.com/Rbm3267/wingllm/releases/latest/download/wingllm.exe"
+$ReleaseUrl = "https://huggingface.co/bennett-xdlabs/wingllm/resolve/main/wingllm.exe"
 
-Write-Host "Downloading WingLLM binary..." -ForegroundColor Yellow
+Write-Host "Downloading WingLLM binary from Hugging Face..." -ForegroundColor Yellow
 try {
     Invoke-WebRequest -Uri $ReleaseUrl -OutFile $ExePath -UseBasicParsing
     Write-Host "Downloaded successfully to: $ExePath" -ForegroundColor Green
 } catch {
-    Write-Host "Note: Release asset not available yet. Falling back to local build if Go is present." -ForegroundColor Gray
-    if (Get-Command go -ErrorAction SilentlyContinue) {
-        go install github.com/Rbm3267/wingllm/cmd/wingllm@latest
-    }
+    Write-Host "Error downloading binary: $_" -ForegroundColor Red
+    exit 1
 }
 
 # Add to user PATH if not present

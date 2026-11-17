@@ -1,7 +1,4 @@
-# Binaries
-wingllm.exe
-wingllm-*
-*.exe
+# Binaries (Local builds ignored, official release binaries tracked)
 *.exe~
 *.dll
 *.so

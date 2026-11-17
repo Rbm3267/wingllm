@@ -1,3 +1,15 @@
+---
+license: mit
+tags:
+  - speculative-decoding
+  - inference-engine
+  - llama-cpp
+  - ollama
+  - low-vram
+  - vram-optimization
+  - heterogeneous-computing
+---
+
 <div align="center">
   <img src="assets/icon.svg" width="96" height="96" alt="WingLLM Logo" />
   <h1>WingLLM</h1>
@@ -71,18 +83,19 @@ Tested on an **Intel Core i5-8500T (6 cores, 32GB RAM)** paired with an **NVIDIA
 
 **macOS & Linux**:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Rbm3267/wingllm/main/install.sh | bash
+curl -fsSL https://huggingface.co/bennett-xdlabs/wingllm/raw/main/install.sh | bash
 ```
 
 **Windows (PowerShell)**:
 ```powershell
-irm https://raw.githubusercontent.com/Rbm3267/wingllm/main/install.ps1 | iex
+irm https://huggingface.co/bennett-xdlabs/wingllm/raw/main/install.ps1 | iex
 ```
 
-*Or install from source with Go:*
-```bash
-go install github.com/Rbm3267/wingllm/cmd/wingllm@latest
-```
+**Direct Binary Downloads**:
+* Windows: [`wingllm.exe`](https://huggingface.co/bennett-xdlabs/wingllm/resolve/main/wingllm.exe)
+* macOS (Apple Silicon): [`wingllm-darwin-arm64`](https://huggingface.co/bennett-xdlabs/wingllm/resolve/main/wingllm-darwin-arm64)
+* macOS (Intel): [`wingllm-darwin-amd64`](https://huggingface.co/bennett-xdlabs/wingllm/resolve/main/wingllm-darwin-amd64)
+* Linux (x86_64): [`wingllm-linux-amd64`](https://huggingface.co/bennett-xdlabs/wingllm/resolve/main/wingllm-linux-amd64)
 
 ### 2. Check Available Models & Pairings
 ```bash

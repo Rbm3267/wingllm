@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # WingLLM Universal Installer for macOS and Linux
-# Usage: curl -fsSL https://raw.githubusercontent.com/Rbm3267/wingllm/main/install.sh | bash
+# Usage: curl -fsSL https://huggingface.co/bennett-xdlabs/wingllm/raw/main/install.sh | bash
 
 set -e
 
@@ -21,20 +21,16 @@ INSTALL_DIR="$HOME/.wingllm/bin"
 mkdir -p "$INSTALL_DIR"
 
 BINARY="wingllm-${OS}-${ARCH}"
-RELEASE_URL="https://github.com/Rbm3267/wingllm/releases/latest/download/${BINARY}"
+RELEASE_URL="https://huggingface.co/bennett-xdlabs/wingllm/resolve/main/${BINARY}"
 DEST="$INSTALL_DIR/wingllm"
 
-echo "Downloading WingLLM for ${OS}/${ARCH}..."
+echo "Downloading WingLLM for ${OS}/${ARCH} from Hugging Face..."
 if curl -fsSL "$RELEASE_URL" -o "$DEST"; then
   chmod +x "$DEST"
   echo "Downloaded successfully to $DEST"
 else
-  echo "Pre-built binary not found. Compiling from source..."
-  if command -v go >/dev/null 2>&1; then
-    go install github.com/Rbm3267/wingllm/cmd/wingllm@latest
-    echo "Installed via go install!"
-    exit 0
-  fi
+  echo "Error downloading binary from Hugging Face: $RELEASE_URL"
+  exit 1
 fi
 
 # Add to PATH in shell profile

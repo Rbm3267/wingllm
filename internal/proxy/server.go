@@ -113,7 +113,7 @@ func DashboardHTML(pair *discovery.PairedModels) string {
   <div class="card">
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
       <svg width="32" height="32" viewBox="0 0 120 120" fill="none" style="filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.4));">
-        <path d="M60 16 C60.8 16 62 18.5 62.5 24 L63.5 44 L98 64 C99.5 65 99.8 66.8 98.8 67.5 L94.5 70 L63.5 61.5 L63.5 86 L74 95 C74.8 95.8 74.8 97 73.8 97.5 L70.5 98.5 L60 94 L49.5 98.5 L46.2 97.5 C45.2 97 45.2 95.8 46 95 L56.5 86 L56.5 61.5 L25.5 70 L21.2 67.5 C20.2 66.8 20.5 65 22 64 L56.5 44 L57.5 24 C58 18.5 59.2 16 60 16 Z" fill="#38bdf8"/>
+        <path d="M60 16 C60.8 16 62 18.5 62.5 24 L63.5 44 L98 64 C99.5 65 99.8 66.8 98.8 67.5 L94.5 70 L63.5 61.5 L63.5 86 L74 95 C74.8 95.8 74.8 97 73.8 97.5 L70.5 98.5 L60 94 L49.5 98.5 L46.2 97.5 C45.2 97 45.2 95.8 46 95 L56.5 86 L56.5 61.5 L25.5 70 L21.2 67.5 C20.2 66.8 20.5 65 22 64 L56.5 44 L57.5 24 C58 18.5 59.2 16 60 16 Z" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <h1 style="margin: 0; font-size: 24px; color: #38bdf8;">WingLLM</h1>
       <span class="badge">ACTIVE (2x Turbo)</span>

@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"os"
 	"os/exec"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -27,7 +29,7 @@ var banner = `
 
 func main() {
 	if len(os.Args) < 2 {
-		printUsage()
+		handleInteractive()
 		return
 	}
 
@@ -44,6 +46,67 @@ func main() {
 		fmt.Printf("Unknown command '%s'\n", command)
 		printUsage()
 	}
+}
+
+func handleInteractive() {
+	fmt.Println(banner)
+	fmt.Println(" Scanning local models in Ollama...")
+
+	models, err := discovery.ScanOllamaModels()
+	if err != nil || len(models) == 0 {
+		fmt.Println("No local Ollama models found.")
+		fmt.Print("Would you like to auto-pull Qwen 2.5 Coder 7B + 0.5B draft? (Y/n): ")
+		reader := bufio.NewReader(os.Stdin)
+		input, _ := reader.ReadString('\n')
+		input = strings.TrimSpace(strings.ToLower(input))
+		if input == "" || input == "y" || input == "yes" {
+			pullCmd := exec.Command("ollama", "pull", "qwen2.5-coder:7b")
+			pullCmd.Stdout = os.Stdout
+			pullCmd.Stderr = os.Stderr
+			pullCmd.Run()
+			models, _ = discovery.ScanOllamaModels()
+		} else {
+			return
+		}
+	}
+
+	// Filter viable target models
+	var viableTargets []string
+	for _, m := range models {
+		if !m.IsDraft {
+			viableTargets = append(viableTargets, m.Name)
+		}
+	}
+
+	if len(viableTargets) == 0 {
+		fmt.Println("No target models available. Run 'ollama pull qwen2.5-coder:7b'")
+		return
+	}
+
+	fmt.Println("\nAvailable models ready for 2x Speculative Turbo:")
+	for i, name := range viableTargets {
+		rec := ""
+		if i == 0 || strings.Contains(name, "7b") {
+			rec = " [Recommended]"
+		}
+		fmt.Printf("  [%d] %-30s%s\n", i+1, name, rec)
+	}
+
+	fmt.Print("\nSelect model number (or press Enter for [1]): ")
+	reader := bufio.NewReader(os.Stdin)
+	choiceStr, _ := reader.ReadString('\n')
+	choiceStr = strings.TrimSpace(choiceStr)
+
+	choiceIndex := 0
+	if choiceStr != "" {
+		if num, err := strconv.Atoi(choiceStr); err == nil && num >= 1 && num <= len(viableTargets) {
+			choiceIndex = num - 1
+		}
+	}
+
+	selectedModel := viableTargets[choiceIndex]
+	fmt.Printf("\nLaunching WingLLM with '%s'...\n\n", selectedModel)
+	handleServe([]string{selectedModel})
 }
 
 func printUsage() {

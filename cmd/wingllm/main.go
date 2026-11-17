@@ -13,6 +13,7 @@ import (
 
 	"github.com/Rbm3267/wingllm/internal/discovery"
 	"github.com/Rbm3267/wingllm/internal/engine"
+	"github.com/Rbm3267/wingllm/internal/plugin"
 	"github.com/Rbm3267/wingllm/internal/proxy"
 	"github.com/Rbm3267/wingllm/internal/ui"
 	"github.com/Rbm3267/wingllm/internal/vram"
@@ -31,6 +32,8 @@ func main() {
 		handleVRAM()
 	case "list":
 		handleList()
+	case "connect":
+		handleConnect(os.Args[2:])
 	case "serve", "run":
 		handleServe(os.Args[2:])
 	default:
@@ -43,13 +46,25 @@ func printUsage() {
 	ui.PlayPlaneBanner()
 	fmt.Println("Usage: wingllm <command> [options]")
 	fmt.Println("\nCommands:")
-	fmt.Println("  serve <model>   Start speculative inference server (auto-pairs with draft model)")
-	fmt.Println("  list            Scan local Ollama models and show available target/draft pairs")
-	fmt.Println("  vram            Inspect GPU VRAM status and available budget")
+	fmt.Println("  serve <model>     Start speculative inference server (auto-pairs with draft model)")
+	fmt.Println("  connect [vscode]  Auto-configure WingLLM into VS Code (Continue/Cline) with 1 click")
+	fmt.Println("  list              Scan local Ollama models and show available target/draft pairs")
+	fmt.Println("  vram              Inspect GPU VRAM status and available budget")
 	fmt.Println("\nExamples:")
 	fmt.Println("  wingllm serve qwen2.5-coder:7b")
+	fmt.Println("  wingllm connect vscode")
 	fmt.Println("  wingllm list")
 	fmt.Println("  wingllm vram")
+}
+
+func handleConnect(args []string) {
+	modelName := "qwen2.5-coder:7b"
+	if len(args) > 1 {
+		modelName = args[1]
+	}
+	if err := plugin.ConnectVSCode(modelName); err != nil {
+		fmt.Printf("Error connecting: %v\n", err)
+	}
 }
 
 func handleInteractive() {

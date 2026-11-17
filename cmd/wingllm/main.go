@@ -192,11 +192,13 @@ func handleServe(args []string) {
 	enginePort := fs.Int("engine-port", 8081, "Internal llama-server port")
 	ctxSize := fs.Int("ctx", 2048, "Context window size")
 	draftNMax := fs.Int("draft-n", 3, "Number of tokens to draft ahead per step")
+	customDraft := fs.String("draft", "", "Custom draft model name (e.g. llama3.2:1b, gemma2:2b)")
 	fs.Parse(args)
 
 	if fs.NArg() < 1 {
 		fmt.Println("Error: Missing target model name.")
 		fmt.Println("Example: wingllm serve qwen2.5-coder:7b")
+		fmt.Println("         wingllm serve llama3.1:8b --draft llama3.2:1b")
 		return
 	}
 
@@ -208,31 +210,40 @@ func handleServe(args []string) {
 		return
 	}
 
-	pair, err := discovery.FindBestPair(targetModel, models)
-	if err != nil {
-		// Check if target model exists but needs draft model
-		var target *discovery.ModelInfo
-		for i := range models {
-			if strings.EqualFold(models[i].Name, targetModel) || strings.Contains(strings.ToLower(models[i].Name), strings.ToLower(targetModel)) {
-				target = &models[i]
-				break
-			}
-		}
-		if target != nil {
-			draftName := discovery.GetDefaultDraftName(target.Family)
-			fmt.Printf("\nCompatible draft model not found locally.\nAuto-pulling recommended draft model '%s' via Ollama (~397 MB)...\n\n", draftName)
-			pullCmd := exec.Command("ollama", "pull", draftName)
-			pullCmd.Stdout = os.Stdout
-			pullCmd.Stderr = os.Stderr
-			if err := pullCmd.Run(); err == nil {
-				// Rescan models
-				models, _ = discovery.ScanOllamaModels()
-				pair, err = discovery.FindBestPair(targetModel, models)
-			}
-		}
-		if pair == nil {
-			fmt.Printf("Pairing Error: %v\n", err)
+	var pair *discovery.PairedModels
+	if *customDraft != "" {
+		pair, err = discovery.PairWithCustomDraft(targetModel, *customDraft, models)
+		if err != nil {
+			fmt.Printf("Custom Pair Error: %v\n", err)
 			return
+		}
+	} else {
+		pair, err = discovery.FindBestPair(targetModel, models)
+		if err != nil {
+			// Check if target model exists but needs draft model
+			var target *discovery.ModelInfo
+			for i := range models {
+				if strings.EqualFold(models[i].Name, targetModel) || strings.Contains(strings.ToLower(models[i].Name), strings.ToLower(targetModel)) {
+					target = &models[i]
+					break
+				}
+			}
+			if target != nil {
+				draftName := discovery.GetDefaultDraftName(target.Family)
+				fmt.Printf("\nCompatible draft model not found locally.\nAuto-pulling recommended draft model '%s' via Ollama (~397 MB)...\n\n", draftName)
+				pullCmd := exec.Command("ollama", "pull", draftName)
+				pullCmd.Stdout = os.Stdout
+				pullCmd.Stderr = os.Stderr
+				if err := pullCmd.Run(); err == nil {
+					// Rescan models
+					models, _ = discovery.ScanOllamaModels()
+					pair, err = discovery.FindBestPair(targetModel, models)
+				}
+			}
+			if pair == nil {
+				fmt.Printf("Pairing Error: %v\n", err)
+				return
+			}
 		}
 	}
 

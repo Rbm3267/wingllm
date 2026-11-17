@@ -64,7 +64,36 @@ func FindBestPair(targetName string, available []ModelInfo) (*PairedModels, erro
 	}, nil
 }
 
-// GetDefaultDraftName returns the recommended draft model name for a given family.
+// PairWithCustomDraft manually pairs a target model with an explicit draft model chosen by the user.
+func PairWithCustomDraft(targetName string, draftName string, available []ModelInfo) (*PairedModels, error) {
+	var target *ModelInfo
+	var draft *ModelInfo
+
+	for i := range available {
+		if strings.EqualFold(available[i].Name, targetName) || strings.Contains(strings.ToLower(available[i].Name), strings.ToLower(targetName)) {
+			target = &available[i]
+		}
+		if strings.EqualFold(available[i].Name, draftName) || strings.Contains(strings.ToLower(available[i].Name), strings.ToLower(draftName)) {
+			draft = &available[i]
+		}
+	}
+
+	if target == nil {
+		return nil, fmt.Errorf("target model '%s' not found locally in Ollama", targetName)
+	}
+	if draft == nil {
+		return nil, fmt.Errorf("custom draft model '%s' not found locally in Ollama", draftName)
+	}
+
+	return &PairedModels{
+		Target:       *target,
+		Draft:        *draft,
+		RecommendedN: 3,
+		Reason: fmt.Sprintf("User specified custom pair: %s (Target) + %s (Draft)",
+			target.Name, draft.Name,
+		),
+	}, nil
+}
 func GetDefaultDraftName(family string) string {
 	switch family {
 	case "qwen2.5":

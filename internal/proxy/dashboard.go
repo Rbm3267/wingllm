@@ -258,7 +258,7 @@ func DashboardHTML(pair *discovery.PairedModels) string {
 
     <!-- IDE Configuration Info -->
     <div class="info-card">
-      💡 <strong>Connect to VS Code (Continue / Cline)</strong>: Set Provider to <code>OpenAI</code>, Model to <code>%s</code>, and API Base URL to <code>http://localhost:8080/v1</code>.
+      <strong>Connect to VS Code (Continue / Cline)</strong>: Set Provider to <code>OpenAI</code>, Model to <code>%s</code>, and API Base URL to <code>http://localhost:8080/v1</code>.
     </div>
   </div>
 
@@ -322,7 +322,7 @@ func DashboardHTML(pair *discovery.PairedModels) string {
         
         const speedTag = document.createElement('div');
         speedTag.className = 'speed-tag';
-        speedTag.innerText = '⚡ ' + tokPerSec + ' tokens/sec (' + tokenCount + ' tokens in ' + durationSec.toFixed(1) + 's) [Speculative 2x Turbo]';
+        speedTag.innerText = tokPerSec + ' tokens/sec (' + tokenCount + ' tokens in ' + durationSec.toFixed(1) + 's) [Speculative 2x Turbo]';
         assistDiv.appendChild(speedTag);
 
         speedMeter.innerText = tokPerSec + ' tok/s';

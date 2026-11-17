@@ -51,7 +51,7 @@ Tested on an **Intel Core i5-8500T (6 cores, 32GB RAM)** paired with an **NVIDIA
 | Mode | Target Model | Draft Model | Generation Speed | Total Time (32 tok) | Speedup |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Baseline (Pure CPU)** | Qwen 2.5 Coder 7B | *None* | **1.29 tok/s** | 24.76 s | **1.0×** |
-| **WingLLM (Speculative)** | Qwen 2.5 Coder 7B | Qwen 2.5 Coder 0.5B | **2.54 tok/s** | 12.62 s | **1.97× FASTER** 🚀 |
+| **WingLLM (Speculative)** | Qwen 2.5 Coder 7B | Qwen 2.5 Coder 0.5B | **2.54 tok/s** | 12.62 s | **1.97× FASTER** |
 
 ---
 

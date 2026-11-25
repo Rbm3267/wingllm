@@ -17,7 +17,7 @@ tags:
   <p>
     <a href="https://www.xdlabs.io/work/wingllm"><strong>xdlabs.io/work/wingllm →</strong></a> •
     <a href="https://huggingface.co/bennett-xdlabs/wingllm"><strong>Hugging Face Hub →</strong></a> •
-    <a href="https://gitlab.com/xdlabs-io/wingllm"><strong>GitLab →</strong></a>
+    <a href="https://github.com/Rbm3267/wingllm"><strong>GitHub →</strong></a>
   </p>
   <p>
     <a href="https://golang.org"><img src="https://img.shields.io/badge/go-1.22+-blue.svg" alt="Go Version" /></a>
